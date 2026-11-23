@@ -1,0 +1,16 @@
+import {chromium} from '@playwright/test';
+import fs from 'node:fs/promises';
+import {spawn} from 'node:child_process';
+const server=spawn(process.execPath,['node_modules/vite/bin/vite.js','--host','127.0.0.1','--port','5174'],{stdio:'pipe',windowsHide:true});
+await new Promise((resolve,reject)=>{server.stdout.on('data',d=>{if(String(d).includes('Local:'))resolve();});server.on('error',reject);setTimeout(()=>reject(new Error('Server timeout')),15000).unref();});
+const browser=await chromium.launch({channel:'msedge',headless:true,args:['--enable-webgl','--use-angle=swiftshader','--enable-unsafe-swiftshader']});
+const page=await browser.newPage({viewport:{width:1440,height:1000}});
+const errors=[];page.on('pageerror',e=>errors.push(e.message));page.on('console',m=>{if(m.type()==='error')errors.push(m.text());});
+await fs.mkdir('test-results',{recursive:true});
+await page.goto('http://127.0.0.1:5174/?debug=1');await page.waitForTimeout(2500);
+await page.screenshot({path:'test-results/welcome.png'});
+console.log(JSON.stringify({errors,state:await page.evaluate(()=>globalThis.__lamsat?.snapshot()),metrics:await page.evaluate(()=>globalThis.__lamsat?.metrics())}));
+await page.locator('[data-action="start"]').click();await page.waitForTimeout(1000);await page.screenshot({path:'test-results/gate.png'});
+console.log(JSON.stringify({errors,state:await page.evaluate(()=>globalThis.__lamsat?.snapshot()),metrics:await page.evaluate(()=>globalThis.__lamsat?.metrics())}));
+await browser.close();
+server.kill();

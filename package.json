@@ -1,0 +1,17 @@
+{
+  "name": "lamsat-oman",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "An interactive Omani heritage exhibition for WebXR and desktop",
+  "scripts": {
+    "dev": "vite --host 0.0.0.0",
+    "build": "vite build",
+    "preview": "vite preview --host 0.0.0.0",
+    "test": "node --test src/tests/*.test.js",
+    "test:browser": "npm run build && node scripts/browser-test.mjs"
+  },
+  "dependencies": { "three": "0.181.2" },
+  "devDependencies": { "vite": "7.3.8", "@playwright/test": "1.58.2" },
+  "engines": { "node": ">=22.12.0" }
+}

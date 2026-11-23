@@ -1,0 +1,61 @@
+name: Publish Lamsat Oman
+
+on:
+  push:
+    branches: [main, master]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: github-pages
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pages: read
+    steps:
+      - name: Check out project
+        uses: actions/checkout@v6
+      - name: Set up Node.js
+        uses: actions/setup-node@v6
+        with:
+          node-version: '22'
+          cache: npm
+      - name: Configure Pages
+        uses: actions/configure-pages@v5
+      - name: Install dependencies
+        run: npm ci
+      - name: Run tests
+        run: npm test
+      - name: Build website
+        run: npm run build
+      # upload-pages-artifact excludes dot-directories. Keep .well-known so
+      # Android Digital Asset Links can verify the Quest application's origin.
+      - name: Package Pages artifact including Digital Asset Links
+        run: tar --dereference --hard-dereference --directory dist --exclude=.git --exclude=.github -cf "$RUNNER_TEMP/artifact.tar" .
+      - name: Upload Pages artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: github-pages
+          path: ${{ runner.temp }}/artifact.tar
+          retention-days: 1
+          if-no-files-found: error
+
+  deploy:
+    runs-on: ubuntu-latest
+    needs: build
+    permissions:
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Deploy website
+        id: deployment
+        uses: actions/deploy-pages@v4

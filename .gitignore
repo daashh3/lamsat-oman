@@ -1,0 +1,32 @@
+node_modules/
+dist/
+test-results/
+.DS_Store
+*.log
+.npm-cache/
+.pnpm-store/
+
+# Local configuration and private Android signing material.
+.env
+.env.*
+!.env.example
+*.keystore
+*.jks
+*.p12
+*.pfx
+*.key
+*.pem
+key.properties
+keystore.properties
+local.properties
+quest/signing/
+
+# Generated packages and Android/Bubblewrap tool caches.
+*.apk
+*.aab
+.gradle/
+.bubblewrap/
+.tools/
+android/build/
+android/app/build/
+quest/build/
