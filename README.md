@@ -2,7 +2,7 @@
 
 تجربة تراث عُماني تفاعلية بثلاثة أبعاد، تتضمن سبع محطات وخمس قطع تراثية تُكتسب باللعب. تدعم WebXR للواقع الافتراضي والمختلط، والتدوير ٣٦٠° بالفأرة واللمس، ومؤثرات تفاعلية فقط دون موسيقى أو تعليق صوتي.
 
-للنشر على GitHub وتشغيلها من النظارة والكمبيوتر مطفأ، اتبع [دليل النشر وتغليف تطبيق Quest](quest/README.md). إعداد GitHub Pages والتخزين للعمل بلا إنترنت جاهز في المشروع؛ الرفع الفعلي وبناء APK ينتظران المستودع والموقع المنشور وربط التوقيع.
+مصدر المشروع على [GitHub](https://github.com/daashh3/lamsat-oman)، وعنوان GitHub Pages هو [لمسة عُمان](https://daashh3.github.io/lamsat-oman/). للنشر والتشغيل من النظارة والكمبيوتر مطفأ، اتبع [دليل النشر وتغليف تطبيق Quest](quest/README.md). إعداد التخزين للعمل بلا إنترنت جاهز؛ بناء APK ما زال يحتاج مفتاح التوقيع وربط النطاق.
 
 الكود الكامل في كتل قابلة للنسخ: [UPDATED_CODE.md](docs/UPDATED_CODE.md). تفاصيل التحديات: [GAMIFICATION_UPDATE.md](docs/GAMIFICATION_UPDATE.md). عدّل الرسائل المكتوبة والحقائق العربية في [ArabicScripts.js](src/audio/ArabicScripts.js).
 
@@ -54,7 +54,7 @@ The three small side keepsakes (resin charm, water/aflaj object and khanjar) and
 4. Allow the browser's XR session request. Look toward a clear comfortable area. The small exhibit appears in front of the actual viewer pose; a suitable hit-test result can anchor placement. Use **تمركز / إعادة التمركز** when needed.
 5. Keep hands in the tracking area. Pinch to grab and open fingers to release. The Arabic menu is a fixed reading lectern on the right of the exhibit, with a backing board and base. Turning or moving your head leaves it in place; explicit recenter moves the exhibit and lectern together. It works without DOM Overlay: touch nearby controls, or aim a hand/controller ray and pinch/select. Returning from the headset system menu leaves the experience paused; select resume.
 
-The development computer's `localhost` is **not** the headset's `localhost`. A LAN `http://192.168…` address is not a trusted secure origin for immersive WebXR. For live development, point a trusted HTTPS tunnel at the Vite server, restrict it to the project, and permit only its actual hostname in `server.allowedHosts` if required. The static `dist` route avoids development-server configuration entirely. No hosting account was created and no site was published as part of this delivery.
+The development computer's `localhost` is **not** the headset's `localhost`. A LAN `http://192.168…` address is not a trusted secure origin for immersive WebXR. For live development, point a trusted HTTPS tunnel at the Vite server, restrict it to the project, and permit only its actual hostname in `server.allowedHosts` if required. The hosted application uses GitHub Pages with HTTPS at https://daashh3.github.io/lamsat-oman/; the development server is not needed on the headset.
 
 ## Verification
 
