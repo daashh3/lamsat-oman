@@ -2,7 +2,7 @@
 
 تجربة تراث عُماني تفاعلية بثلاثة أبعاد، تتضمن سبع محطات وخمس قطع تراثية تُكتسب باللعب. تدعم WebXR للواقع الافتراضي والمختلط، والتدوير ٣٦٠° بالفأرة واللمس، ومؤثرات تفاعلية فقط دون موسيقى أو تعليق صوتي.
 
-مصدر المشروع على [GitHub](https://github.com/daashh3/lamsat-oman)، وعنوان GitHub Pages هو [لمسة عُمان](https://daashh3.github.io/lamsat-oman/). للنشر والتشغيل من النظارة والكمبيوتر مطفأ، اتبع [دليل النشر وتغليف تطبيق Quest](quest/README.md). إعداد التخزين للعمل بلا إنترنت جاهز؛ بناء APK ما زال يحتاج مفتاح التوقيع وربط النطاق.
+مصدر المشروع على [GitHub](https://github.com/daashh3/lamsat-oman)، وعنوان GitHub Pages هو [لمسة عُمان](https://daashh3.github.io/lamsat-oman/). ملف APK الموقّع موجود محليًا في `quest/Lamsat-Oman-Quest.apk`؛ اتبع [دليل تثبيت تطبيق Quest وإعادة بنائه](quest/README.md). تم التحقق من التوقيع وربط النطاق وإعدادات VR؛ الاختبار على نظارة فعلية ما زال مطلوبًا.
 
 الكود الكامل في كتل قابلة للنسخ: [UPDATED_CODE.md](docs/UPDATED_CODE.md). تفاصيل التحديات: [GAMIFICATION_UPDATE.md](docs/GAMIFICATION_UPDATE.md). عدّل الرسائل المكتوبة والحقائق العربية في [ArabicScripts.js](src/audio/ArabicScripts.js).
 

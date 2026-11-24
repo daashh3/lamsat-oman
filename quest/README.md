@@ -1,32 +1,44 @@
-# تشغيل لمسة عُمان على Quest بدون كمبيوتر
+# تطبيق لمسة عُمان على Quest
 
-المشروع مرفوع إلى [GitHub](https://github.com/daashh3/lamsat-oman)، مع نشر تلقائي عبر HTTPS على [رابط لمسة عُمان](https://daashh3.github.io/lamsat-oman/). التشغيل على النظارة لا يحتاج خادم PowerShell أو اتصالًا بالكمبيوتر. ملف APK لم يُبنَ بعد؛ يلزم مفتاح توقيع وربط النطاق لتغليفه كتطبيق WebXR غامر بواسطة أداة Meta الرسمية.
+تم بناء APK موقّع بنظام Meta Quest Bubblewrap الرسمي، بوضع WebXR الغامر. الملف المحلي: `quest/Lamsat-Oman-Quest.apk`. معرّف التطبيق `om.lamsat.quest`، الإصدار `1.0.0` ورقم البناء `1`.
 
-## نشر الموقع
+الموقع: https://daashh3.github.io/lamsat-oman/
 
-ارفع **محتويات مجلد lamsat-oman** إلى مستودع GitHub، ثم اختر Settings → Pages → Source: GitHub Actions. ملف `.github/workflows/deploy-pages.yml` يبني المشروع ويشغّل اختباراته وينشر `dist` فقط. لا ترفع `node_modules` أو مفاتيح التوقيع.
+## التثبيت
 
-على الجهاز الحالي، المشروع مرتبط بالمستودع `daashh3/lamsat-oman`. سكربت النشر يكتشف Git المرفق مع Codex حتى عندما لا يعرف PowerShell أمر `git`:
+1. فعّل Developer Mode للنظارة من تطبيق Meta Horizon بالجوال، بحساب مطوّر مؤهل.
+2. وصّل النظارة بكابل USB للبيانات ووافق على USB debugging داخل النظارة.
+3. في Meta VR Developer Hub افتح Device Manager → Apps → Add Build واختر ملف APK.
+4. افتح التطبيق من Library → Unknown Sources. بعد التثبيت يمكن فصل الكمبيوتر وإطفاؤه.
+
+يلزم الإنترنت عند أول تشغيل لتحميل الموقع. التخزين دون إنترنت يبدأ بعد اكتمال تحميل ملفات التطبيق؛ قد يلزم الإنترنت مجددًا إذا حذف النظام بيانات المتصفح. هذه حزمة PWA تستخدم متصفح Quest، ولا تتضمن ملفات الموقع داخل APK.
+
+## التحقق
+
+نجح بناء Android في GitHub Actions، وتم تنزيل الناتج والتحقق من بصمته، ثم توقيعه محليًا. نجحت اختبارات توقيع APK v2/v3، ومعرّف الحزمة، وtarget SDK 32، ووسم VR، واسم التطبيق العربي، وعنوان التشغيل. بصمة الملف في `Lamsat-Oman-Quest.apk.sha256`.
+
+التحقق من النطاق منشور عند https://daashh3.github.io/.well-known/assetlinks.json في مستودع `daashh3/daashh3.github.io`. لا تحذفه؛ يحتاجه وضع التطبيق الغامر. يحتوي بصمة الشهادة العامة فقط.
+
+لم تكن نظارة متصلة أثناء البناء؛ لم يُختبر تشغيل APK على جهاز فعلي بعد.
+
+## إعادة البناء
+
+على الجهاز الحالي، يستخدم `Build-Quest.ps1` أدوات Java وAndroid الموجودة مع Unity، وأداة Meta المثبتة محليًا في `.tools/quest`. من مجلد المشروع:
 
 ```powershell
-powershell -NoProfile -ExecutionPolicy Bypass -File "C:\Users\user\OneDrive\Desktop\LamsatOman_References_Fixed\lamsat-oman\Publish-GitHub.ps1"
+powershell -NoProfile -ExecutionPolicy Bypass -File .\Build-Quest.ps1
 ```
 
-أكمل تسجيل الدخول إلى GitHub إذا طُلب منك. بعد الرفع وتفعيل Pages، افتح Actions → Publish Lamsat Oman → Run workflow. السكربت يحفظ تعديلات ملفات المشروع في commit ثم يرفعها، ويحترم `.gitignore` ولا يستخدم force push.
+للبناء السحابي افتح Actions → Build Quest APK → Run workflow. نزّل artifact باسم `lamsat-quest-unsigned` وفك ضغطه، ثم وقّع ملفه محليًا:
 
-افتح رابط Pages في متصفح النظارة، ثم اضغط الدخول إلى VR. يمكن إطفاء الكمبيوتر. تُخزّن ملفات التشغيل محليًا بعد أول تحميل كامل؛ لا تعتمد على العمل بلا إنترنت قبل اكتمال التخزين. تحديثات الموقع تنتظر إغلاق النوافذ القديمة حتى لا تقاطع جلسة VR.
+```powershell
+powershell -NoProfile -ExecutionPolicy Bypass -File .\Build-Quest.ps1 -UnsignedApk "PATH\app-release-unsigned.apk"
+```
 
-## التطبيق المثبّت
+الناتج النهائي: `quest/Lamsat-Oman-Quest.apk`. ملف `Package-Quest.ps1` الأقدم يوثّق المسار التفاعلي العام؛ `Build-Quest.ps1` هو مسار البناء المستخدم لهذا الإصدار. لتحديث APK محليًا ارفع `VersionCode` وغيّر `VersionName` عند إعادة البناء. تعديلات الموقع وحدها تُنشر عبر `Publish-GitHub.ps1` ولا تتطلب إعادة تثبيت APK ما دام عنوانه ثابتًا.
 
-المسار الرسمي هو Meta Quest Bubblewrap، وليس Android WebView. يحتاج Node.js 22 مع npm وJDK/Android SDK؛ الأداة تعرض إعداد المتطلبات عند الحاجة.
+## مفتاح التوقيع
 
-1. انشر الموقع والملف `manifest.webmanifest` أولًا.
-2. نفّذ `Package-Quest.ps1 -Action Prepare -SiteUrl https://YOUR-HOST/`. اختر immersive، وعطّل المشتريات، واحفظ مفتاح التوقيع وكلمات مروره خارج GitHub.
-3. استخرج بصمة SHA-256 بالمفتاح نفسه باستخدام `keytool -list -v -keystore PATH -alias ALIAS`، ثم أعد Prepare مع `-Fingerprint 'AA:BB:...'` بالبصمة الكاملة.
-4. انشر `quest/assetlinks.json` في **جذر النطاق** عند `https://YOUR-HOST/.well-known/assetlinks.json`. إذا كان موقعك في `username.github.io/lamsat-oman/`، فالملف يجب أن يأتي من مستودع `username.github.io` عند الجذر، أو استخدم نطاقًا مخصصًا. وضعه داخل مسار المشروع وحده لا يكفي.
-5. نفّذ `Package-Quest.ps1 -Action Build -SiteUrl https://YOUR-HOST/`. الناتج الموقّع داخل `quest/build/app-release-signed.apk`.
-6. للتثبيت التجريبي الأول استخدم وضع المطوّر وADB، ثم افتح التطبيق من Unknown Sources. **بعد التثبيت يعمل مستقلًا عن الكمبيوتر**. التوزيع من متجر Meta مسار منفصل يتطلب حساب مطوّر ومراجعة المتجر.
+المفتاح داخل `quest/signing/release.keystore`، وكلمة مروره مشفّرة بـ Windows DPAPI داخل `quest/signing/password.clixml` لحساب Windows الحالي. هذه الملفات مستثناة من Git ولم تُرسل إلى GitHub أو إلى جهاز البناء السحابي. احتفظ بالمفتاح؛ تحديثات التطبيق تحتاج التوقيع نفسه. نقل المفتاح إلى حساب أو جهاز آخر يحتاج تصدير كلمة المرور من الحساب الحالي أولًا، ولا يكفي نسخ ملف DPAPI وحده.
 
-لا يحتوي المشروع على كلمات مرور توقيع أو بيانات GitHub. لا تنشرها. لا تحذف مفتاح التوقيع؛ تحديثات التطبيق تحتاج المفتاح نفسه.
-
-المراجع: [تغليف PWA من Meta](https://developers.meta.com/vr/documentation/web/pwa-packaging/)، [إطلاق WebXR من أيقونة التطبيق](https://developers.meta.com/vr/documentation/web/pwa-webxr/)، [نشر GitHub Pages](https://docs.github.com/en/pages/getting-started-with-github-pages/using-custom-workflows-with-github-pages).
+المراجع: [تغليف PWA من Meta](https://developers.meta.com/vr/documentation/web/pwa-packaging/)، [تثبيت APK باستخدام Developer Hub](https://developers.meta.com/vr/documentation/native/android/ts-mqdh-deploy-build/).

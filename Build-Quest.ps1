@@ -75,8 +75,12 @@ try {
     if (-not $lamsatMatch.Count) { throw 'APK built, but the hosted signing certificate link is not ready.' }
     $lamsatVerification | Set-Content -LiteralPath (Join-Path $lamsatBuild 'signature-verification.txt')
     $lamsatBadging | Set-Content -LiteralPath (Join-Path $lamsatBuild 'apk-metadata.txt')
+    $lamsatDelivery = Join-Path $PSScriptRoot 'quest\Lamsat-Oman-Quest.apk'
+    Copy-Item -LiteralPath $lamsatApk -Destination $lamsatDelivery -Force
+    $lamsatHash = (Get-FileHash -LiteralPath $lamsatDelivery -Algorithm SHA256).Hash.ToLowerInvariant()
+    [IO.File]::WriteAllText(($lamsatDelivery + '.sha256'), ($lamsatHash + '  Lamsat-Oman-Quest.apk' + "`n"), [Text.UTF8Encoding]::new($false))
     Get-FileHash -LiteralPath $lamsatApk -Algorithm SHA256 | Select-Object Algorithm, Hash, Path
-    Write-Host "Signed and verified Quest APK: $lamsatApk"
+    Write-Host "Signed and verified Quest APK: $lamsatDelivery"
 } finally {
     Remove-Item Env:\LAMSAT_SIGNING_PASSWORD -ErrorAction SilentlyContinue
     foreach ($lamsatName in $lamsatPrevious.Keys) { [Environment]::SetEnvironmentVariable($lamsatName, $lamsatPrevious[$lamsatName], 'Process') }
