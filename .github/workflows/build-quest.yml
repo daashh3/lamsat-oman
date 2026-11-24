@@ -1,0 +1,45 @@
+name: Build Quest APK
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  apk:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v6
+      - uses: actions/setup-node@v6
+        with:
+          node-version: '22'
+      - uses: actions/setup-java@v5
+        with:
+          distribution: temurin
+          java-version: '17'
+      - name: Install official Meta packaging tools
+        run: npm install --prefix .tools/quest --ignore-scripts --no-audit --no-fund @meta-quest/bubblewrap-cli@1.24.1 @meta-quest/bubblewrap-core@1.24.1
+      - name: Generate immersive application
+        env:
+          LAMSAT_UNSIGNED_BUILD: '1'
+        run: node quest/generate-project.mjs
+      - name: Build unsigned APK
+        run: |
+          test -d "$ANDROID_HOME/platforms/android-34"
+          test -d "$ANDROID_HOME/build-tools/36.0.0"
+          bash quest/build/gradlew -p quest/build --no-daemon --max-workers=2 '-Dorg.gradle.jvmargs=-Xmx2048m -Dfile.encoding=UTF-8' assembleRelease
+          "$ANDROID_HOME/build-tools/36.0.0/aapt2" dump badging quest/build/app/build/outputs/apk/release/app-release-unsigned.apk > quest/build/apk-metadata.txt
+          sha256sum quest/build/app/build/outputs/apk/release/app-release-unsigned.apk > quest/build/unsigned-sha256.txt
+      # Signing credentials stay on the development computer, never on the runner.
+      - name: Upload APK for local signing
+        uses: actions/upload-artifact@v4
+        with:
+          name: lamsat-quest-unsigned
+          path: |
+            quest/build/app/build/outputs/apk/release/app-release-unsigned.apk
+            quest/build/apk-metadata.txt
+            quest/build/unsigned-sha256.txt
+          if-no-files-found: error
+          retention-days: 7

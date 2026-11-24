@@ -1,0 +1,14 @@
+[
+  {
+    "relation": [
+      "delegate_permission/common.handle_all_urls"
+    ],
+    "target": {
+      "namespace": "android_app",
+      "package_name": "om.lamsat.quest",
+      "sha256_cert_fingerprints": [
+        "3E:9B:CF:CB:AD:7A:B7:B8:55:CA:54:0E:53:DC:F0:BB:64:2F:3D:C4:80:76:86:00:A8:AC:BC:3C:DE:24:E1:E7"
+      ]
+    }
+  }
+]
